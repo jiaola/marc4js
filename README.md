@@ -1,2 +1,13 @@
 # marc4js
-Javascript API for handling MARC 
+A Node.js module for handling MARC records
+
+## Installation
+
+```
+npm install marc4js
+
+```
+
+## Usage
+
+To be completed...

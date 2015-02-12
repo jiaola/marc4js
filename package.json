@@ -1,0 +1,28 @@
+{
+  "name": "marc4js",
+  "version": "0.0.1",
+  "description": "a node.js module for handling MARC data",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha test --recursive --require test/helpers/chai.js "
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jiaola/marc4js.git"
+  },
+  "author": "Dazhi Jiao",
+  "license": "Apache",
+  "bugs": {
+    "url": "https://github.com/jiaola/marc4js/issues"
+  },
+  "homepage": "https://github.com/jiaola/marc4js",
+  "engines": {
+    "node": ">= 0.6.0"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "mocha": "latest",
+    "chai": "^1.10.0"
+  }
+}
