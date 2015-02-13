@@ -7,9 +7,8 @@ describe('parse', function () {
     before(function () {
     });
 
-    it('should have two records and the first record should have 17 variable fields, ' +
-    'including 3 control fields', function (done) {
-        var stream = fs.createReadStream('test/data/chabon.mrc');
+    it('should parse and get one record. The record contains 16 fields, including 5 control fields', function (done) {
+        var stream = fs.createReadStream('samples/the_real_mother_goose.mrc');
         var ms = parse({objectMode: true});
 
         var first;
@@ -23,23 +22,22 @@ describe('parse', function () {
 
         ms.on('error', function (error) {
             console.log("error: ", error);
-        })
+        });
 
         ms.on('end', function () {
-            expect(count).equal(2);
-            expect(first.variableFields.length).equal(17);
-            expect(first.controlFields.length).equal(3);
+            expect(count).equal(1);
+            expect(first.variableFields.length).equal(16);
+            expect(first.controlFields.length).equal(5);
             done();
         });
     });
 
-    it('should have only one record', function (done) {
-        var stream = fs.createReadStream('test/data/summerland.mrc');
-        //expect(count).equal(0);
+    it('should have 159 records', function (done) {
+        var stream = fs.createReadStream('samples/PGA-other-2.mrc');
         var ms = parse({objectMode: true});
 
         var count = 0;
-        ms.on('data', function (record) {
+        ms.on('data', function () {
             count += 1;
         });
 
@@ -47,33 +45,32 @@ describe('parse', function () {
 
         ms.on('error', function (error) {
             console.log("error: ", error);
-        })
+        });
 
         ms.on('end', function () {
-            expect(count).equal(1);
+            expect(count).equal(159);
             done();
         });
     });
 
     it('should work with callback API', function(done) {
-        fs.readFile('test/data/summerland.mrc', function(err, data) {
+        fs.readFile('samples/PGA-other-2.mrc', function(err, data) {
             parse(data, {objectMode: true}, function(err, records) {
                 if (err) {
                     return console.log(err);
                 }
-                expect(records.length).equal(1);
-                expect(records[0].variableFields.length).equal(15);
+                expect(records.length).equal(159);
             });
             done();
         });
     });
 
     it('should work with stream API', function(done) {
-        var data = '00714cam a2200205 a 45000010009000000050017000090080041000260200015000670200022000820400018001041000021001222450034001432500012001772600067001893000021002565200175002776500013004526500023004656500020004881288337620030616111422.0020805s2002    nyu    j      000 1 eng    a0786808772  a0786816155 (pbk.)  aDLCcDLCdDLC1 aChabon, Michael.10aSummerland /cMichael Chabon.  a1st ed.  aNew York :bMiramax Books/Hyperion Books for Children,cc2002.  a500 p. ;c22 cm.  aEthan Feld, the worst baseball player in the history of the game, finds himself recruited by a 100-year-old scout to help a band of fairies triumph over an ancient enemy. 1aFantasy. 1aBaseballvFiction. 1aMagicvFiction.;'
+        var data = '00783nam a2200217Ki 4500001000800000005001700008006001900025007001500044008004100059042000700100092001000107245005000117260007600167300004800243500005500291500003200346540005700378655002200435710002300457856008500480PG1060720101216083600.0m||||||||d||||||||cr||n |||muaua101213s2004    utu     o           eng d  adc  aeBook04aThe Real Mother Gooseh[electronic resource].  aSalt Lake City :bProject Gutenberg Literary Archive Foundation,c2004.  a1 online resource :bmultiple file formats.  aRecords generated from Project Gutenberg RDF data.  aISO 639-2 language code: en  aApplicable license: http://www.gutenberg.org/license 0aElectronic books.2 aProject Gutenberg.40uhttp://www.gutenberg.org/etext/10607yClick here to access a downloadable ebook.';
         var ms = parse({objectMode: true});
 
         var count = 0;
-        ms.on('data', function (record) {
+        ms.on('data', function () {
             count += 1;
         });
 
