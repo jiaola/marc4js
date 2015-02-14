@@ -53,6 +53,13 @@ describe('stringify', function () {
         });
     });
 
+    it('should stringify one record', function(done) {
+        stringify(records[0], function(err, output) {
+            expect(output).to.be.not.null;
+            done();
+        });
+    });
+
     it('should provide a flowing stream API', function(done) {
         var stringifier = stringify({objectMode: true});
         var output = '';
