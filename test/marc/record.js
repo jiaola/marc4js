@@ -7,8 +7,8 @@ describe('Record', function () {
         record = new Record();
     });
 
-    it('should has id 1234', function () {
-        record.id = 1234;
-        expect(record.id).equal(1234);
+    it('should assign leader', function () {
+        record.leader = '00307nam a2200085Ia 45e0';
+        expect(record.leader).equal('00307nam a2200085Ia 45e0');
     });
 });
