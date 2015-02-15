@@ -13,17 +13,4 @@ var should = require('should');
 var parser = marc4js.parse();
 var stringifier = marc4js.stringify();
 
-var records = [];
-parser.on('data', function (record) {
-    records.push(record);
-});
-
-parser.on('error', function (error) {
-    console.log("error: ", error);
-});
-
-parser.on('end', function () {
-    records.length.should.eql(159);
-});
-
 fs.createReadStream('samples/PGA-other-2.mrc').pipe(parser).pipe(stringifier).pipe(process.stdout);

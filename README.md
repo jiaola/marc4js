@@ -9,6 +9,15 @@ npm install marc4js
 
 ```
 
+## Features
+
+In the current release (version 0.0.1), Marc4JS provide the following features
+
+* An easy to use API that can handle large record sets.
+* Uses Node.js stream API and pipe functions for parsing and writing ISO2709 format.
+* Offers callback functions for parsing and writing marc formats.
+* A MARC record object model for in-memory editing of MARC records, similar to the Marc4J object model
+
 ## Examples
 
 Examples can be found in the `samples` directory if source code is cloned from github.
@@ -20,7 +29,7 @@ Parsers read different formats into `marc4js.marc.Record` objects.
 #### Parse MARC file
 
 #### `marc4js.parse`
-`marc4js.parse` parse a string/Buffer in MARC format and creates `marc4js.marc.Record` objects.
+`marc4js.parse` parse a string/Buffer in MARC ISO2709 format and creates `marc4js.marc.Record` objects.
 
 ##### Using the callback API
 
@@ -72,7 +81,7 @@ fs.readFile('samples/PGA-other-2.mrc', function(err, data) {
 One useful function of the Stream API is pipe to interact between multiple streams.
 You may use this function to pipe a stream.Readable string source to a stream.Writable
 object destination. This example is available as `node samples/parse_pipe.js`. It reads a
-file, parses its content and then transform it back to MARC string.
+iso2709 MARC file, parses its content and then transform it back to ISO2709 string.
 
 ```javascript
 var marc4js = require('marc4js');
@@ -81,17 +90,6 @@ var should = require('should');
 
 var parser = marc4js.parse();
 var stringifier = marc4js.stringify();
-
-var records = [];
-parser.on('data', function (record) {
-    records.push(record);
-});
-parser.on('error', function (error) {
-    console.log("error: ", error);
-});
-parser.on('end', function () {
-    records.length.should.eql(159);
-});
 
 var is = fs.createReadStream('samples/PGA-other-2.mrc');
 is.pipe(parser).pipe(stringifier).pipe(process.stdout);
@@ -132,7 +130,7 @@ Transformers transform the marc4js.marc.Record objects into other formats.
 ##### Using the callback API
 
 The following example uses the callback API. The API can convert a single record
-or an array of records into a string in MARC format. The following code snippet is
+or an array of records into a string in ISO2709 format. The following code snippet is
 part of the example code. For the full version, see `samples/parse_pipe.js`.
 
 ```javascript
