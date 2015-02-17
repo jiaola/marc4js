@@ -38,16 +38,6 @@ describe('transform', function () {
         fs.readFile('test/data/PGA_2records.mrc', function(err, data) {
             transform(records, function(err, output) {
                 expect(output.length).equal(data.length);
-
-                for (var i = 0; i < output.length; i++) {
-                    var c1 = output.charAt(i);
-                    var c2 = data.toString().charAt(i);
-                    if (c1 !== c2) {
-                        console.log(i);
-                        console.log(c1, output.charCodeAt(i).toString(16));
-                        console.log(c2, data.toString().charCodeAt(i).toString(16));
-                    }
-                }
                 expect(output).equal(data.toString());
                 done();
             });
@@ -55,7 +45,6 @@ describe('transform', function () {
     });
 
     it('should stringify one record', function(done) {
-        console.log(records[0] instanceof Record);
         transform(records[0], function(err, output) {
             expect(output).to.be.not.null;
             done();

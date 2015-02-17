@@ -85,5 +85,18 @@ describe('parse', function () {
 
         ms.write(data);
         ms.end();
+    });
+
+    it('should parse mrk format', function(done) {
+        fs.readFile('test/data/PGA_2records.mrk', function(err, data) {
+            parse(data, {fromFormat: 'mrk'}, function(err, records) {
+                if (err) {
+                    return console.log(err);
+                }
+                expect(records.length).equal(2);
+                expect(records[1].leader.marshal()).equal('00287nam a2200085Ia 45e0');
+            });
+            done();
+        });
     })
 });

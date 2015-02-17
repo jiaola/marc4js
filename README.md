@@ -11,7 +11,7 @@ npm install marc4js
 
 ## Features
 
-In the current release (version 0.0.1), Marc4JS provide the following features
+In the current release (version 0.0.2), marc4js provides the following features
 
 * An easy to use API that can handle large record sets.
 * Uses Node.js stream API and pipe functions for parsing and writing ISO2709 format.
