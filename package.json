@@ -10,7 +10,7 @@
     "type": "git",
     "url": "https://github.com/jiaola/marc4js.git"
   },
-  "author": "Dazhi Jiao",
+  "author": "Dazhi Jiao <dazhi.jiao@gmail.com>",
   "license": "Apache",
   "bugs": {
     "url": "https://github.com/jiaola/marc4js/issues"

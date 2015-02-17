@@ -8,7 +8,7 @@ describe('parse', function () {
     });
 
     it('should parse and get one record. The record contains 16 fields, including 5 control fields', function (done) {
-        var stream = fs.createReadStream('samples/the_real_mother_goose.mrc');
+        var stream = fs.createReadStream('test/data/the_real_mother_goose.mrc');
         var ms = parse({objectMode: true});
 
         var first;
@@ -33,7 +33,7 @@ describe('parse', function () {
     });
 
     it('should have 159 records', function (done) {
-        var stream = fs.createReadStream('samples/PGA-other-2.mrc');
+        var stream = fs.createReadStream('test/data/PGA-other-2.mrc');
         var ms = parse({objectMode: true});
 
         var count = 0;
@@ -54,7 +54,7 @@ describe('parse', function () {
     });
 
     it('should work with callback API', function(done) {
-        fs.readFile('samples/PGA-other-2.mrc', function(err, data) {
+        fs.readFile('test/data/PGA-other-2.mrc', function(err, data) {
             parse(data, {objectMode: true}, function(err, records) {
                 if (err) {
                     return console.log(err);

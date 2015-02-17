@@ -1,7 +1,8 @@
 'use strict';
 
 var fs = require('fs');
-var stringify = require('../lib/stringify');
+var os = require('os');
+var transform = require('../lib/transform');
 var parse = require('../lib/parse');
 var Record = require('../lib/marc/record');
 var Subfield = require('../lib/marc/subfield');
@@ -10,7 +11,7 @@ var ControlField = require('../lib/marc/control_field');
 var Leader = require('../lib/marc/leader');
 
 
-describe('stringify', function () {
+describe('transform', function () {
     var records;
     before(function () {
         records = [];
@@ -34,8 +35,8 @@ describe('stringify', function () {
     });
 
     it('should stringify the records with callback', function(done) {
-        fs.readFile('samples/PGA_2records.mrc', function(err, data) {
-            stringify(records, function(err, output) {
+        fs.readFile('test/data/PGA_2records.mrc', function(err, data) {
+            transform(records, function(err, output) {
                 expect(output.length).equal(data.length);
 
                 for (var i = 0; i < output.length; i++) {
@@ -54,14 +55,15 @@ describe('stringify', function () {
     });
 
     it('should stringify one record', function(done) {
-        stringify(records[0], function(err, output) {
+        console.log(records[0] instanceof Record);
+        transform(records[0], function(err, output) {
             expect(output).to.be.not.null;
             done();
         });
     });
 
-    it('should provide a flowing stream API', function(done) {
-        var stringifier = stringify({objectMode: true});
+    it('should stringify with a flowing stream API', function(done) {
+        var stringifier = transform({objectMode: true});
         var output = '';
         stringifier.on('data', function(record) {
             output += record;
@@ -70,7 +72,7 @@ describe('stringify', function () {
             console.log(err.message);
         });
         stringifier.on('end', function() {
-            fs.readFile('samples/PGA_2records.mrc', function(err, data) {
+            fs.readFile('test/data/PGA_2records.mrc', function(err, data) {
                 expect(output.length).equal(data.length);
                 expect(output).equal(data.toString());
                 done();
@@ -83,8 +85,8 @@ describe('stringify', function () {
 
     });
 
-    it('should provide a non-flowing stream API', function(done) {
-        var stringifier = stringify({objectMode: false});
+    it('should stringify with a non-flowing stream API', function(done) {
+        var stringifier = transform({objectMode: false, toFormat: 'iso2709'});
         var output = '';
         stringifier.on('readable', function() {
             var record;
@@ -96,7 +98,7 @@ describe('stringify', function () {
             console.log(err.message);
         });
         stringifier.on('end', function() {
-            fs.readFile('samples/PGA_2records.mrc', function(err, data) {
+            fs.readFile('test/data/PGA_2records.mrc', function(err, data) {
                 expect(output.length).equal(data.length);
                 expect(output).equal(data.toString());
                 done();
@@ -108,12 +110,12 @@ describe('stringify', function () {
         stringifier.end();
     });
 
-    it('pipe to destination', function(done) {
-        var stringifier = stringify({objectMode: true});
+    it('should pipe to destination', function(done) {
+        var stringifier = transform({objectMode: true});
         var parser = parse({objectMode: true});
         var mrc = '00783nam a2200217Ki 4500001000800000005001700008006001900025007001500044008004100059042000700100092001000107245005000117260007600167300004800243500005500291500003200346540005700378655002200435710002300457856008500480PG1060720101216083600.0m||||||||d||||||||cr||n |||muaua101213s2004    utu     o           eng d  adc  aeBook04aThe Real Mother Gooseh[electronic resource].  aSalt Lake City :bProject Gutenberg Literary Archive Foundation,c2004.  a1 online resource :bmultiple file formats.  aRecords generated from Project Gutenberg RDF data.  aISO 639-2 language code: en  aApplicable license: http://www.gutenberg.org/license 0aElectronic books.2 aProject Gutenberg.40uhttp://www.gutenberg.org/etext/10607yClick here to access a downloadable ebook.';
         var ws = fs.createWriteStream('/tmp/the_real_mother_goose.mrc');
-        var is = fs.createReadStream('samples/the_real_mother_goose.mrc');
+        var is = fs.createReadStream('test/data/the_real_mother_goose.mrc');
         return is.pipe(parser).pipe(stringifier).pipe(ws).on('finish', function() {
             return fs.readFile('/tmp/the_real_mother_goose.mrc', function(err, data) {
                 expect(data.toString().length).equal(mrc.length);
@@ -121,5 +123,73 @@ describe('stringify', function () {
                 return fs.unlink('/tmp/the_real_mother_goose.mrc', done);
             });
         });
+    });
+
+    it('should textify the records with callback', function(done) {
+        fs.readFile('test/data/PGA_2records.mrk', function(err, data) {
+            data = data.toString().replace(/\r\n?/g, os.EOL) + os.EOL;
+            transform(records, {toFormat: 'text'}, function(err, output) {
+                expect(output.length).equal(data.length);
+                expect(output).equal(data);
+                done();
+            });
+        });
+    });
+
+    it('should textify one record', function(done) {
+        transform(records[0], {toFormat: 'text'}, function(err, output) {
+            expect(output).to.be.not.null;
+            done();
+        });
+    });
+
+    it('should textify with a flowing stream API', function(done) {
+        var textifier = transform({objectMode: true, toFormat: 'text'});
+        var output = '';
+        textifier.on('data', function(record) {
+            output += record;
+        });
+        textifier.on('error', function(err) {
+            console.log(err.message);
+        });
+        textifier.on('end', function() {
+            fs.readFile('test/data/PGA_2records.mrk', function(err, data) {
+                data = data.toString().replace(/\r\n?/g, os.EOL) + os.EOL;
+                expect(output.length).equal(data.length);
+                expect(output).equal(data.toString());
+                done();
+            });
+        });
+        records.forEach(function(record) {
+            textifier.write(record);
+        });
+        textifier.end();
+
+    });
+
+    it('should textify with a non-flowing stream API', function(done) {
+        var textifier = transform({objectMode: false, toFormat: 'text'});
+        var output = '';
+        textifier.on('readable', function() {
+            var record;
+            while (record = textifier.read()) {
+                output += record;
+            }
+        });
+        textifier.on('error', function(err) {
+            console.log(err.message);
+        });
+        textifier.on('end', function() {
+            fs.readFile('test/data/PGA_2records.mrk', function(err, data) {
+                data = data.toString().replace(/\r\n?/g, os.EOL) + os.EOL;
+                expect(output.length).equal(data.length);
+                expect(output).equal(data.toString());
+                done();
+            });
+        });
+        records.forEach(function(record) {
+            textifier.write(record);
+        });
+        textifier.end();
     });
 });
