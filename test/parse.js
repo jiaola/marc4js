@@ -7,8 +7,8 @@ describe('parse', function () {
     before(function () {
     });
 
-    it('should parse and get one record. The record contains 16 fields, including 5 control fields', function (done) {
-        var stream = fs.createReadStream('test/data/the_real_mother_goose.mrc');
+    it('should parse one record and identify fields', function (done) {
+        var stream = fs.createReadStream('test/data/sandburg.mrc');
         var parser = parse({objectMode: true});
 
         var first;
@@ -26,14 +26,14 @@ describe('parse', function () {
 
         parser.on('end', function () {
             expect(count).equal(1);
-            expect(first.variableFields.length).equal(16);
-            expect(first.controlFields.length).equal(5);
+            expect(first.variableFields.length).equal(23);
+            expect(first.controlFields.length).equal(4);
             done();
         });
     });
 
-    it('should have 159 records', function (done) {
-        var stream = fs.createReadStream('test/data/PGA-other-2.mrc');
+    it('should parse multiple records', function (done) {
+        var stream = fs.createReadStream('test/data/collection.mrc');
         var parser = parse({objectMode: true});
 
         var count = 0;
@@ -48,18 +48,18 @@ describe('parse', function () {
         });
 
         parser.on('end', function () {
-            expect(count).equal(159);
+            expect(count).equal(2);
             done();
         });
     });
 
     it('should work with callback API', function(done) {
-        fs.readFile('test/data/PGA-other-2.mrc', function(err, data) {
+        fs.readFile('test/collection.mrc', function(err, data) {
             parse(data, {objectMode: true}, function(err, records) {
                 if (err) {
                     return console.log(err);
                 }
-                expect(records.length).equal(159);
+                expect(records.length).equal(2);
             });
             done();
         });
@@ -88,13 +88,13 @@ describe('parse', function () {
     });
 
     it('should parse mrk format', function(done) {
-        fs.readFile('test/data/PGA_2records.mrk', function(err, data) {
+        fs.readFile('test/collection.mrk', function(err, data) {
             parse(data, {fromFormat: 'mrk'}, function(err, records) {
                 if (err) {
                     return console.log(err);
                 }
                 expect(records.length).equal(2);
-                expect(records[1].leader.marshal()).equal('00287nam a2200085Ia 45e0');
+                expect(records[1].leader.marshal()).equal('00925njm  22002777a 4500');
             });
             done();
         });
