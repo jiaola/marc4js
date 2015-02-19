@@ -181,4 +181,12 @@ describe('transform', function () {
         });
         textifier.end();
     });
+
+    it('should marcxmlify with a non-flowing stream API', function(done) {
+        transform(records[0], {toFormat: 'marcxml'}, function(err, output) {
+            console.log(output);
+            expect(output).to.be.not.null;
+            done();
+        });
+    });
 });
