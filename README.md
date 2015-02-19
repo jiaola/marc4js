@@ -6,7 +6,6 @@ A Node.js module for handling MARC records
 
 ```
 npm install marc4js
-
 ```
 
 ## Features
@@ -14,180 +13,151 @@ npm install marc4js
 In the current release (version 0.0.2), marc4js provides the following features
 
 * An easy to use API that can handle large record sets.
-* Uses Node.js stream API and pipe functions for parsing and writing ISO2709 format.
-* Offers callback functions for parsing and writing marc formats.
+* Uses Node.js stream API and pipe functions for parsing and writing ISO2709 format, MarcEdit text (mrk) format and MARCXML.
+* Offers callback functions for parsing and writing various formats.
+* SAX based MARCXLM parsing that doesn't in-memory storage of records while parsing. Able to parse large MARCXML file with ease.
 * A MARC record object model for in-memory editing of MARC records, similar to the Marc4J object model
 
 ## Examples
 
-Examples can be found in the `samples` directory if source code is cloned from github.
+Examples can be found in the the [marc4js_examples](https://github.com/jiaola/marc4js_examples)
+
+## Usage
+
+```javascript
+var marc4js = require('marc4js');
+```
 
 ### Parsers
 
-Parsers read different formats into `marc4js.marc.Record` objects.
+Parsers take various MARC formats and convert them to `marc4js.marc.Record` objects. Marc4js supports ISO2709, text
+(MarcEdit .mrc file) and MARCXML formats.
 
-#### Parse MARC file
+There are three ways to use a parser.
 
-#### `marc4js.parse`
-`marc4js.parse` parse a string/Buffer in MARC ISO2709 format and creates `marc4js.marc.Record` objects.
+#### Callback API
 
-##### Using the callback API
-
-The parser receive a string/Buffer and return am array of `marc4js.marc.Record` objects
-inside a user-provided callback. This example is available with the command
-`node samples/callback.js`.
-
-```javascript
-var marc4js = require('marc4js');
-var fs = require('fs');
-var should = require('should');
-
-fs.readFile('samples/PGA-other-2.mrc', function(err, data) {
-    marc4js.parse(data, {}, function(err, records) {
-        records.length.should.eql(159);
-    });
+```
+marc4js.parse(data, options, function(err, records) {
 });
 ```
 
-##### Using the stream API and pipe function
-
-The following example uses the stream API of the parser. Since the parser always emit
-objects, it always uses the non-flowing mode - one can only attach
-a 'data' event listener, but not a 'readable' event listener. The object passed to
-the callback function in the 'data' event listener is a `marc4js.marc.Record` object.
+#### Stream API
 
 ```javascript
-var marc4js = require('marc4js');
-var fs = require('fs');
-var should = require('should');
-
-var parser = marc4js.parse();
-var records = [];
-fs.readFile('samples/PGA-other-2.mrc', function(err, data) {
-    parser.on('data', function (record) {
-        records.push(record);
-    });
-    parser.on('error', function (error) {
-        console.log("error: ", error);
-    });
-    parser.on('end', function () {
-        records.length.should.eql(159);
-    });
-    parser.write(data.toString());
-    parser.end();
+var parser = marc4js.parse(options);
+parser.on('data', function(record) {
 });
+parser.on('end', function() {
+});
+parser.on('error', function(err) {
+});
+parser.write(data);
+parser.end();
 ```
 
-One useful function of the Stream API is pipe to interact between multiple streams.
-You may use this function to pipe a stream.Readable string source to a stream.Writable
-object destination. This example is available as `node samples/parse_pipe.js`. It reads a
-iso2709 MARC file, parses its content and then transform it back to ISO2709 string.
+#### Pipe function
 
 ```javascript
-var marc4js = require('marc4js');
-var fs = require('fs');
-var should = require('should');
-
-var parser = marc4js.parse();
-var stringifier = marc4js.stringify();
-
-var is = fs.createReadStream('samples/PGA-other-2.mrc');
-is.pipe(parser).pipe(stringifier).pipe(process.stdout);
+var parser = marc4js.parse(options);
+fs.createReadStream('/path/to/your/file').pipe(parser).pipe(transformer).pipe(process.stdout);
 ```
 
-This example uses the pipe and the stream API to parse a marc file.
+#### options
 
-```javascript
-var marc4js = require('marc4js');
-var fs = require('fs');
-var should = require('should');
+`fromFormat`: default `iso2709`, possible values `iso2709`, `marc`, `text`, `mrk`, `marcxml`, `xml`
 
-var parser = marc4js.parse();
+#### Different types of parsers
 
-var records = [];
-parser.on('data', function (record) {
-    records.push(record);
-});
+##### ISO2709Parser
 
-parser.on('error', function (error) {
-    console.log("error: ", error);
-});
+Parses ISO2709 format. Used by default or when `fromFormat` is `iso2709` or `marc`
 
-parser.on('end', function () {
-    records.length.should.eql(159);
-});
+##### MrkParser
 
-fs.createReadStream('samples/PGA-other-2.mrc').pipe(parser);
-```
+Parses MarcEdit text format (.mrk files). Used when `fromFormat` is `text` or `mrk`
+
+Other options:
+
+`spaceReplace`: In MarcEdit mrk files, spaces in data field indicators or control fields are replace by `\`. By default
+MrkPaser will convert `\` to space in those places. It can be configured with this option.
+
+##### MarcxmlParser
+
+Parses MarcEdit text format (.mrk files). Used when `fromFormat` is `marcxml` or `xml`
+
+The stream and pipe API is SAX based so it doesn't require in-memory storage of the records. This is suitable for processing large MARCXML file.
+The callback API will read all records in memory and return it in the callback function and is not advised to process large MARCXML file.
+
+Other options:
+
+`strict`: default is `false`. When in `strict` mode, the parser will fail if the XML is not well-formatted. For details, see the `strict` option in [sax-js](https://github.com/isaacs/sax-js).
 
 ### Transformers
-Transformers transform the marc4js.marc.Record objects into other formats.
 
-#### `marc4js.stringify`
+Transformers transform the `marc4js.marc.Record` objects into various MARC formats. Marc4js supports ISO2709, text
+(MarcEdit .mrc file) and MARCXML formats.
 
-`marc4js.stringify` converts `marc4js.marc.Record` objects into MARC strings.
+Like parsers, transformers can also be used in three different ways.
 
-##### Using the callback API
+#### Callback API
 
-The following example uses the callback API. The API can convert a single record
-or an array of records into a string in ISO2709 format. The following code snippet is
-part of the example code. For the full version, see `samples/parse_pipe.js`.
-
-```javascript
-var marc4js = require('marc4js');
-
-// build a record from scratch
-var record = new marc4js.marc.Record();
-// build the record ...
-
-// converts a single record
-marc4js.stringify(record, {}, function(err, data) {
-    console.log(data);
-});
-
-// build an array of records
-var records = [];
-records.push(record);
-var record2 = new marc4js.marc.Record();
-// build the record ...
-records.push(record2);
-
-// converts an array of records
-marc4js.stringify(records, {}, function(err, data) {
-    console.log(data);
+```
+marc4js.transform(records, options, function(err, output) {
 });
 ```
 
-##### Using the stream API
-
-Same as `marc4js.parse`, `marc4js.stringify` also provice usage through the stream API.
-Complete version of code is in `samples/stringify_stream`
+#### Stream API
 
 ```javascript
-var marc4js = require('marc4js');
-
-var stringifier = marc4js.stringify();
-var output = '';
-stringifier.on('data', function(chunk) {
-    output += chunk
+var transformer = marc4js.transform(options);
+transformer.on('data', function(output) {
 });
-stringifier.on('error', function(err) {
-    console.log(err.message);
+transformer.on('end', function() {
 });
-stringifier.on('end', function() {
-    console.log(output);
+transformer.on('error', function(err) {
 });
-var records = [];
-// build records ...
-records.forEach(function(record) {
-    stringifier.write(record);
-});
-stringifier.end();
+transformer.write(records);
+transformer.end();
 ```
 
-As shown in the parser examples, stringifier and other transformers can be used
-in a pipe that is in the down stream of a parser pipe. For details see the example
- `samples/parser_pipe.js`
+#### Pipe function
+
+```javascript
+var transformer = marc4js.transform(options);
+fs.createReadStream('/path/to/your/file').pipe(parser).pipe(transformer).pipe(process.stdout);
+```
+
+#### options
+
+`toFormat`: default `iso2709`, possible values `iso2709`, `marc`, `text`, `mrk`, `marcxml`, `xml`
+
+#### Different types of parsers
+
+##### ISO2709Transformer
+
+Outputs ISO2709 format. Used by default or when `toFormat` is `iso2709` or `marc`
+
+##### MrkTransformer
+
+Outputs MarcEdit text format (.mrk files). Used when `toFormat` is `text` or `mrk`
+
+Other options:
+
+`spaceReplace`: by default space in data field indicators and control fields are replaced with `\`. But it can be configured with this option.
+
+##### MarcxmlTransformer
+
+Outputs MarcEdit text format (.mrk files). Used when `toFormat` is `marcxml` or `xml`
+
+Other options:
+
+`pretty`: default is `true`. Output XML in pretty format. If set to false, new indentation and line-breakers in outputs.
+`indent`: default is `'  '` (two spaces). Used to indent lines in pretty format.
+`newline`: default is `\n`. Used in pretty format.
+`declaration`: default is `true`. If set to false, the XML declaration line (<?xml versiont ...>) is not included in the output.
+`root`: default is `true`. If `false`, the root `<collection>` element is not included in the output.
+
 
 
 
