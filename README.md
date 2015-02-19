@@ -79,7 +79,7 @@ Parses MarcEdit text format (.mrk files). Used when `fromFormat` is `text` or `m
 
 Other options:
 
-`spaceReplace`: In MarcEdit mrk files, spaces in data field indicators or control fields are replace by `\`. By default
+* `spaceReplace`: In MarcEdit mrk files, spaces in data field indicators or control fields are replace by `\`. By default
 MrkPaser will convert `\` to space in those places. It can be configured with this option.
 
 ##### MarcxmlParser
@@ -91,7 +91,7 @@ The callback API will read all records in memory and return it in the callback f
 
 Other options:
 
-`strict`: default is `false`. When in `strict` mode, the parser will fail if the XML is not well-formatted. For details, see the `strict` option in [sax-js](https://github.com/isaacs/sax-js).
+* `strict`: default is `false`. When in `strict` mode, the parser will fail if the XML is not well-formatted. For details, see the `strict` option in [sax-js](https://github.com/isaacs/sax-js).
 
 ### Transformers
 
@@ -144,7 +144,7 @@ Outputs MarcEdit text format (.mrk files). Used when `toFormat` is `text` or `mr
 
 Other options:
 
-`spaceReplace`: by default space in data field indicators and control fields are replaced with `\`. But it can be configured with this option.
+* `spaceReplace`: by default space in data field indicators and control fields are replaced with `\`. But it can be configured with this option.
 
 ##### MarcxmlTransformer
 
@@ -152,11 +152,11 @@ Outputs MarcEdit text format (.mrk files). Used when `toFormat` is `marcxml` or 
 
 Other options:
 
-`pretty`: default is `true`. Output XML in pretty format. If set to false, new indentation and line-breakers in outputs.
-`indent`: default is `'  '` (two spaces). Used to indent lines in pretty format.
-`newline`: default is `\n`. Used in pretty format.
-`declaration`: default is `true`. If set to false, the XML declaration line (<?xml versiont ...>) is not included in the output.
-`root`: default is `true`. If `false`, the root `<collection>` element is not included in the output.
+* `pretty`: default is `true`. Output XML in pretty format. If set to false, new indentation and line-breakers in outputs.
+* `indent`: default is `'  '` (two spaces). Used to indent lines in pretty format.
+* `newline`: default is `\n`. Used in pretty format.
+* `declaration`: default is `true`. If set to false, the XML declaration line (<?xml versiont ...>) is not included in the output.
+* `root`: default is `true`. If `false`, the root `<collection>` element is not included in the output.
 
 
 
