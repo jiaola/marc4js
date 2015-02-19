@@ -26,5 +26,14 @@
   "devDependencies": {
     "mocha": "latest",
     "chai": "^1.10.0"
-  }
+  },
+  "keywords": [
+    "marc4js",
+    "marc",
+    "node.js",
+    "javascript",
+    "parser",
+    "marcxml",
+    "iso2709"
+  ]
 }

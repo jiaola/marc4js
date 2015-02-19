@@ -1,3 +1,5 @@
 /test
 /samples
 .travis.yml
+.idea
+.npmignore
