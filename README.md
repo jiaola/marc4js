@@ -122,7 +122,11 @@ transformer.on('end', function() {
 });
 transformer.on('error', function(err) {
 });
-transformer.write(records);
+transformer.write(record); // one record
+// or to write an array of records
+// records.forEach(function(record) {
+//     transformer.write(record);
+// });
 transformer.end();
 ```
 
