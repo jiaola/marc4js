@@ -56,6 +56,11 @@ parser.write(data);
 parser.end();
 ```
 
+All events are based on [the Node.js stream API](http://nodejs.org/api/stream.html).
+
+Note that the parsers always work in the paused (aka non-flowing) streaming mode - therefore the `objectMode` option of
+the stream api is disabled, and is always set to `true`. Listening to the `readable` event will throw an erorr.
+
 #### Pipe function
 
 ```javascript
@@ -111,7 +116,7 @@ marc4js.transform(records, options, function(err, output) {
 
 ```javascript
 var transformer = marc4js.transform(options);
-transformer.on('data', function(output) {
+transformer.on('readable', function(output) {
 });
 transformer.on('end', function() {
 });
@@ -120,6 +125,10 @@ transformer.on('error', function(err) {
 transformer.write(records);
 transformer.end();
 ```
+
+Note that even though parsers can be only in the flowing mode, the transformers can use either flowing or paused (aka non-flowing) mode in the
+[stream API](http://nodejs.org/api/stream.html). In the above example it's using the paused mode, but it can also use the `data` event handler
+if flowing mode is used.
 
 #### Pipe function
 
@@ -131,6 +140,7 @@ fs.createReadStream('/path/to/your/file').pipe(parser).pipe(transformer).pipe(pr
 #### options
 
 `toFormat`: default `iso2709`, possible values `iso2709`, `marc`, `text`, `mrk`, `marcxml`, `xml`
+`objectMode`: default `false`. Used to switch between the flowing and paused (aka non-flowing) mode in the [stream API](http://nodejs.org/api/stream.html).
 
 #### Different types of parsers
 
@@ -155,7 +165,7 @@ Other options:
 * `pretty`: default is `true`. Output XML in pretty format. If set to false, new indentation and line-breakers in outputs.
 * `indent`: default is `'  '` (two spaces). Used to indent lines in pretty format.
 * `newline`: default is `\n`. Used in pretty format.
-* `declaration`: default is `true`. If set to false, the XML declaration line (<?xml versiont ...>) is not included in the output.
+* `declaration`: default is `true`. If set to `false`, the XML declaration line (`<?xml versiont ...>`) is not included in the output.
 * `root`: default is `true`. If `false`, the root `<collection>` element is not included in the output.
 
 
