@@ -10,7 +10,7 @@ npm install marc4js
 
 ## Features
 
-In the current release (version 0.0.2), marc4js provides the following features
+In the current release (version 0.0.4), marc4js provides the following features
 
 * An easy to use API that can handle large record sets.
 * Uses Node.js stream API and pipe functions for parsing and writing ISO2709 format, MarcEdit text (mrk) format and MARCXML.
@@ -74,7 +74,7 @@ fs.createReadStream('/path/to/your/file').pipe(parser).pipe(transformer).pipe(pr
 
 #### Different types of parsers
 
-##### ISO2709Parser
+##### Iso2709Parser
 
 Parses ISO2709 format. Used by default or when `fromFormat` is `iso2709` or `marc`
 
@@ -97,6 +97,13 @@ The callback API will read all records in memory and return it in the callback f
 Other options:
 
 * `strict`: default is `false`. When in `strict` mode, the parser will fail if the XML is not well-formatted. For details, see the `strict` option in [sax-js](https://github.com/isaacs/sax-js).
+
+##### MijParser
+
+Parses [MARC-in-JSON](http://dilettantes.code4lib.org/blog/2010/09/a-proposal-to-serialize-marc-in-json/) format. Used when `fromFormat` is `json` or `mij`.
+
+The stream and pipe API uses a sax-like JSON stream parser so it doesn't require in-memory storage of the records. Thus it can process
+large number of MARC-in-JSON records.
 
 ### Transformers
 
@@ -146,9 +153,9 @@ fs.createReadStream('/path/to/your/file').pipe(parser).pipe(transformer).pipe(pr
 `toFormat`: default `iso2709`, possible values `iso2709`, `marc`, `text`, `mrk`, `marcxml`, `xml`
 `objectMode`: default `false`. Used to switch between the flowing and paused (aka non-flowing) mode in the [stream API](http://nodejs.org/api/stream.html).
 
-#### Different types of parsers
+#### Different types of Transformers
 
-##### ISO2709Transformer
+##### Iso2709Transformer
 
 Outputs ISO2709 format. Used by default or when `toFormat` is `iso2709` or `marc`
 
@@ -172,6 +179,13 @@ Other options:
 * `declaration`: default is `true`. If set to `false`, the XML declaration line (`<?xml versiont ...>`) is not included in the output.
 * `root`: default is `true`. If `false`, the root `<collection>` element is not included in the output.
 
+##### MijTransformer
 
+Outputs [MARC-in-JSON](http://dilettantes.code4lib.org/blog/2010/09/a-proposal-to-serialize-marc-in-json/) string. Used when `toFormat` is `json` or `mij`.
+
+Other options:
+
+* asArray: default is `true`. By default the output will be in an JSON array format, even if there is only one record.
+If this option set to false, the output will not write the enclosing brackets `[` and `]` at the beginning and end of the output.
 
 
