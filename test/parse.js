@@ -127,4 +127,13 @@ describe('parse', function () {
         });
     });
 
+    it('should parse marc in json', function(done) {
+        fs.readFile('test/data/marc_in_json.json', function(err, data) {
+            parse(data.toString(), {fromFormat: 'json'}, function(err, records) {
+                expect(records.length).equal(1);
+            });
+            done();
+        });
+    });
+
 });

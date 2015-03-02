@@ -20,6 +20,7 @@
     "node": ">= 0.10.0"
   },
   "dependencies": {
+    "clarinet": "^0.10.0",
     "sax": "^0.6.1",
     "xmlbuilder": "^2.5.2"
   },
