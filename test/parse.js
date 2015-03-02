@@ -1,4 +1,5 @@
 var parse = require('../lib/parse');
+var transform = require('../lib/transform');
 var fs = require('fs');
 
 describe('parse', function () {
@@ -131,6 +132,16 @@ describe('parse', function () {
         fs.readFile('test/data/marc_in_json.json', function(err, data) {
             parse(data.toString(), {fromFormat: 'json'}, function(err, records) {
                 expect(records.length).equal(1);
+            });
+            done();
+        });
+    });
+
+    it('should parse marc-in-json with multiple records', function(done) {
+        fs.readFile('test/data/collection.json', function(err, data) {
+            parse(data.toString(), {fromFormat: 'json'}, function(err, records) {
+                expect(records.length).equal(2);
+                expect(records[1].leader.marshal()).equal('01832cmma 2200349 a 4500');
             });
             done();
         });
