@@ -188,4 +188,14 @@ describe('transform', function () {
             done();
         });
     });
+
+    it('should transform to marc-in-json format', function(done) {
+        transform(records, {toFormat: 'mij'}, function(err, output) {
+            expect(output).to.be.not.null;
+            var obj = JSON.parse(output);
+            expect(obj[0].leader).equal('00307nam a2200085Ia 45e0');
+            expect(obj[1].fields.length).equal(5);
+            done();
+        });
+    })
 });
