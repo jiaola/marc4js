@@ -1,6 +1,7 @@
 var parse = require('../lib/parse');
 var transform = require('../lib/transform');
 var fs = require('fs');
+var marc8 = require('marc8');
 
 describe('parse', function () {
     var stream;
@@ -71,7 +72,11 @@ describe('parse', function () {
         var parser = parse({objectMode: true});
 
         var count = 0;
-        parser.on('data', function () {
+        parser.on('data', function (record) {
+            var fields = record.dataFields;
+            var field = fields[fields.length - 1];
+            expect(field.indicator1).equal('4');
+            expect(field.indicator2).equal('0');
             count += 1;
         });
 
@@ -147,4 +152,16 @@ describe('parse', function () {
         });
     });
 
+    it('should parse file with only utf8', function(done) {
+        fs.readFile('test/data/utf8_only.mrc', function(err, data) {
+            parse(data, {fromFormat: 'iso2709', marc8converter: marc8}, function(err, records) {
+                expect(records.length).equal(6);
+                transform(records, {toFormat: 'text'}, function(err, output) {
+                    expect(output.indexOf('黑澤明')).to.be.least(0);
+                    expect(output.indexOf('Premio del Público 27°')).to.be.least(0);
+                    done();
+                });
+            });
+        });
+    });
 });

@@ -52,15 +52,15 @@ describe('transform', function () {
     });
 
     it('should stringify with a flowing stream API', function(done) {
-        var stringifier = transform({objectMode: true});
+        var transformer = transform({objectMode: true});
         var output = '';
-        stringifier.on('data', function(record) {
+        transformer.on('data', function(record) {
             output += record;
         });
-        stringifier.on('error', function(err) {
+        transformer.on('error', function(err) {
             console.log(err.message);
         });
-        stringifier.on('end', function() {
+        transformer.on('end', function() {
             fs.readFile('test/data/PGA_2records.mrc', function(err, data) {
                 expect(output.length).equal(data.length);
                 expect(output).equal(data.toString());
@@ -68,25 +68,25 @@ describe('transform', function () {
             });
         });
         records.forEach(function(record) {
-            stringifier.write(record);
+            transformer.write(record);
         });
-        stringifier.end();
+        transformer.end();
 
     });
 
     it('should stringify with a non-flowing stream API', function(done) {
-        var stringifier = transform({objectMode: false, toFormat: 'iso2709'});
+        var transformer = transform({objectMode: false, toFormat: 'iso2709'});
         var output = '';
-        stringifier.on('readable', function() {
+        transformer.on('readable', function() {
             var record;
-            while (record = stringifier.read()) {
+            while (record = transformer.read()) {
                 output += record;
             }
         });
-        stringifier.on('error', function(err) {
+        transformer.on('error', function(err) {
             console.log(err.message);
         });
-        stringifier.on('end', function() {
+        transformer.on('end', function() {
             fs.readFile('test/data/PGA_2records.mrc', function(err, data) {
                 expect(output.length).equal(data.length);
                 expect(output).equal(data.toString());
@@ -94,20 +94,20 @@ describe('transform', function () {
             });
         });
         records.forEach(function(record) {
-            stringifier.write(record);
+            transformer.write(record);
         });
-        stringifier.end();
+        transformer.end();
     });
 
     it('should pipe to destination', function(done) {
-        var stringifier = transform({objectMode: true});
+        var transformer = transform({objectMode: true});
         var parser = parse({objectMode: true});
         var mrc = '00783nam a2200217Ki 4500001000800000005001700008006001900025007001500044008004100059042000700100092001000107245005000117260007600167300004800243500005500291500003200346540005700378655002200435710002300457856008500480PG1060720101216083600.0m||||||||d||||||||cr||n |||muaua101213s2004    utu     o           eng d  adc  aeBook04aThe Real Mother Gooseh[electronic resource].  aSalt Lake City :bProject Gutenberg Literary Archive Foundation,c2004.  a1 online resource :bmultiple file formats.  aRecords generated from Project Gutenberg RDF data.  aISO 639-2 language code: en  aApplicable license: http://www.gutenberg.org/license 0aElectronic books.2 aProject Gutenberg.40uhttp://www.gutenberg.org/etext/10607yClick here to access a downloadable ebook.';
         var ws = fs.createWriteStream('/tmp/the_real_mother_goose.mrc');
         var is = fs.createReadStream('test/data/the_real_mother_goose.mrc');
-        return is.pipe(parser).pipe(stringifier).pipe(ws).on('finish', function() {
+        return is.pipe(parser).pipe(transformer).pipe(ws).on('finish', function() {
             return fs.readFile('/tmp/the_real_mother_goose.mrc', function(err, data) {
-                expect(data.toString().length).equal(mrc.length);
+                //expect(data.toString().length).equal(mrc.length);
                 expect(data.toString()).equal(mrc);
                 return fs.unlink('/tmp/the_real_mother_goose.mrc', done);
             });
