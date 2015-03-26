@@ -17,11 +17,12 @@ In the current release (version 0.0.5), marc4js provides the following features
 * Offers callback functions for parsing and writing various formats.
 * SAX based MARCXLM parsing that doesn't in-memory storage of records while parsing. Able to parse large MARCXML file with ease.
 * A MARC record object model for in-memory editing of MARC records, similar to the Marc4J object model
-* Supports UTF-8 encoded marc files and MARC-8 encoded marc files (It requires [marc8](https://www.npmjs.com/package/marc8) to handle MARC-8 encoded files). 
+* Supports UTF-8 encoded marc files and MARC-8 encoded marc files (It requires [marc8](https://www.npmjs.com/package/marc8) to handle MARC-8 encoded files).
 
 ## Examples
 
-Examples can be found in the the [marc4js_examples](https://github.com/jiaola/marc4js_examples)
+Examples can be found in the the [marc4js_examples](https://github.com/jiaola/marc4js_examples). You can also find
+examples in the test directory. 
 
 ## Usage
 
