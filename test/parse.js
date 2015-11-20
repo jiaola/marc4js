@@ -28,7 +28,6 @@ describe('parse', function () {
         });
 
         parser.on('end', function () {
-            console.log('end' + count);
             expect(count).equal(1);
             expect(first.variableFields.length).to.equal(23);
             expect(first.controlFields.length).equal(4);
@@ -38,7 +37,7 @@ describe('parse', function () {
 
     it('should parse multiple records', function (done) {
         var stream = fs.createReadStream('test/data/collection.mrc');
-        var parser = parse({objectMode: true});
+        var parser = parse({objectMode: true, fromFormat: 'marc'});
 
         var count = 0;
         parser.on('data', function () {
@@ -49,6 +48,7 @@ describe('parse', function () {
 
         parser.on('error', function (error) {
             console.log("error: ", error);
+            done();
         });
 
         parser.on('end', function () {
@@ -61,9 +61,10 @@ describe('parse', function () {
         var data = fs.readFileSync('test/data/collection.mrc');
         parse(data, {objectMode: true}, function(err, records) {
             if (err) {
-                return console.log(err);
+                console.log(err);
+            } else {
+                expect(records.length).equal(2);
             }
-            expect(records.length).equal(2);
             done();
         });
     });
@@ -99,10 +100,11 @@ describe('parse', function () {
         //console.log(data);
         parse(data, {fromFormat: 'mrk'}, function(err, records) {
             if (err) {
-                return console.log(err);
+                console.log(err);
+            } else {
+                expect(records.length).to.equal(2);
+                expect(records[1].leader.marshal()).equal('01832cmmaa2200349 a 4500');
             }
-            expect(records.length).to.equal(2);
-            expect(records[1].leader.marshal()).equal('01832cmmaa2200349 a 4500');
             done();
         });
     });
@@ -111,11 +113,12 @@ describe('parse', function () {
         var data = fs.readFileSync('test/data/sandburg.xml');
         parse(data.toString(), {fromFormat: 'marcxml'}, function(err, records) {
             if (err) {
-                return console.log(err);
+                console.log(err);
+            } else {
+                expect(records.length).equal(1);
+                expect(records[0].leader.marshal()).equal('01142cam  2200301 a 4500');
+                expect(records[0].dataFields[6].subfields[1].code).equal('d');
             }
-            expect(records.length).equal(1);
-            expect(records[0].leader.marshal()).equal('01142cam  2200301 a 4500');
-            expect(records[0].dataFields[6].subfields[1].code).equal('d');
             done();
         });
     });
@@ -124,10 +127,11 @@ describe('parse', function () {
         var data = fs.readFileSync('test/data/collection.xml');
         parse(data.toString(), {fromFormat: 'marcxml'}, function(err, records) {
             if (err) {
-                return console.log(err);
+                console.log(err);
+            } else {
+                expect(records.length).equal(2);
+                expect(records[1].leader.marshal()).equal('01832cmma 2200349 a 4500');
             }
-            expect(records.length).equal(2);
-            expect(records[1].leader.marshal()).equal('01832cmma 2200349 a 4500');
             done();
         });
     });
@@ -143,6 +147,7 @@ describe('parse', function () {
     it('should parse marc-in-json with multiple records', function(done) {
         var data = fs.readFileSync('test/data/collection.json');
         parse(data.toString(), {fromFormat: 'json'}, function(err, records) {
+            console.log(records.length);
             expect(records.length).equal(2);
             expect(records[1].leader.marshal()).equal('01832cmma 2200349 a 4500');
             done();
@@ -158,6 +163,24 @@ describe('parse', function () {
                 expect(output.indexOf('Premio del Público 27°')).to.be.least(0);
                 done();
             });
+        });
+    });
+
+    it('should return empty array for a blank string', function(done) {
+        "use strict";
+        var data = "";
+        parse(data, {fromFormat: 'text'}, function(err, records) {
+            expect(records.length).to.equal(0);
+            done();
+        });
+    });
+
+    it('should return empty array for a null string', function(done) {
+        "use strict";
+        var data = null;
+        parse(data, {fromFormat: 'text'}, function(err, records) {
+            expect(records.length).to.equal(0);
+            done();
         });
     });
 });
