@@ -24,6 +24,7 @@ describe('parse', function () {
 
         parser.on('error', function (error) {
             console.log("error: ", error);
+            done();
         });
 
         parser.on('end', function () {
@@ -57,13 +58,12 @@ describe('parse', function () {
     });
 
     it('should work with callback API', function(done) {
-        fs.readFile('test/collection.mrc', function(err, data) {
-            parse(data, {objectMode: true}, function(err, records) {
-                if (err) {
-                    return console.log(err);
-                }
-                expect(records.length).equal(2);
-            });
+        var data = fs.readFileSync('test/data/collection.mrc');
+        parse(data, {objectMode: true}, function(err, records) {
+            if (err) {
+                return console.log(err);
+            }
+            expect(records.length).equal(2);
             done();
         });
     });
@@ -121,46 +121,42 @@ describe('parse', function () {
     });
 
     it('should parse MARCXML with multiple records and namespace', function(done) {
-        fs.readFile('test/data/collection.xml', function(err, data) {
-            parse(data.toString(), {fromFormat: 'marcxml'}, function(err, records) {
-                if (err) {
-                    return console.log(err);
-                }
-                expect(records.length).equal(2);
-                expect(records[1].leader.marshal()).equal('01832cmma 2200349 a 4500');
-            });
+        var data = fs.readFileSync('test/data/collection.xml');
+        parse(data.toString(), {fromFormat: 'marcxml'}, function(err, records) {
+            if (err) {
+                return console.log(err);
+            }
+            expect(records.length).equal(2);
+            expect(records[1].leader.marshal()).equal('01832cmma 2200349 a 4500');
             done();
         });
     });
 
     it('should parse marc in json', function(done) {
-        fs.readFile('test/data/marc_in_json.json', function(err, data) {
-            parse(data.toString(), {fromFormat: 'json'}, function(err, records) {
-                expect(records.length).equal(1);
-            });
+        var data = fs.readFileSync('test/data/marc_in_json.json');
+        parse(data.toString(), {fromFormat: 'json'}, function(err, records) {
+            expect(records.length).equal(1);
             done();
         });
     });
 
     it('should parse marc-in-json with multiple records', function(done) {
-        fs.readFile('test/data/collection.json', function(err, data) {
-            parse(data.toString(), {fromFormat: 'json'}, function(err, records) {
-                expect(records.length).equal(2);
-                expect(records[1].leader.marshal()).equal('01832cmma 2200349 a 4500');
-            });
+        var data = fs.readFileSync('test/data/collection.json');
+        parse(data.toString(), {fromFormat: 'json'}, function(err, records) {
+            expect(records.length).equal(2);
+            expect(records[1].leader.marshal()).equal('01832cmma 2200349 a 4500');
             done();
         });
     });
 
     it('should parse file with only utf8', function(done) {
-        fs.readFile('test/data/utf8_only.mrc', function(err, data) {
-            parse(data, {fromFormat: 'iso2709', marc8converter: marc8}, function(err, records) {
-                expect(records.length).equal(6);
-                transform(records, {toFormat: 'text'}, function(err, output) {
-                    expect(output.indexOf('黑澤明')).to.be.least(0);
-                    expect(output.indexOf('Premio del Público 27°')).to.be.least(0);
-                    done();
-                });
+        var data = fs.readFileSync('test/data/utf8_only.mrc');
+        parse(data, {fromFormat: 'iso2709', marc8converter: marc8}, function(err, records) {
+            expect(records.length).equal(6);
+            transform(records, {toFormat: 'text'}, function(err, output) {
+                expect(output.indexOf('黑澤明')).to.be.least(0);
+                expect(output.indexOf('Premio del Público 27°')).to.be.least(0);
+                done();
             });
         });
     });
