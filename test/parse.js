@@ -166,7 +166,7 @@ describe('parse', function () {
         });
     });
 
-    it('should return empty array for a blank string', function(done) {
+    it('should return empty array for a blank string as text', function(done) {
         "use strict";
         var data = "";
         parse(data, {fromFormat: 'text'}, function(err, records) {
@@ -175,10 +175,28 @@ describe('parse', function () {
         });
     });
 
-    it('should return empty array for a null string', function(done) {
+    it('should return empty array for a blank string as marc', function(done) {
+        "use strict";
+        var data = "";
+        parse(data, {fromFormat: 'marc'}, function(err, records) {
+            expect(records.length).to.equal(0);
+            done();
+        });
+    });
+
+    it('should return empty array for a null variable as text', function(done) {
         "use strict";
         var data = null;
         parse(data, {fromFormat: 'text'}, function(err, records) {
+            expect(records.length).to.equal(0);
+            done();
+        });
+    });
+
+    it('should return empty array for a null variable as MARC', function(done) {
+        "use strict";
+        var data = null;
+        parse(data, {fromFormat: 'marc'}, function(err, records) {
             expect(records.length).to.equal(0);
             done();
         });
