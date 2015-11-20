@@ -35,12 +35,11 @@ describe('transform', function () {
     });
 
     it('should stringify the records with callback', function(done) {
-        fs.readFile('test/data/PGA_2records.mrc', function(err, data) {
-            transform(records, function(err, output) {
-                expect(output.length).equal(data.length);
-                expect(output).equal(data.toString());
-                done();
-            });
+        var data = fs.readFileSync('test/data/PGA_2records.mrc');
+        transform(records, function(err, output) {
+            expect(output.length).equal(data.length);
+            expect(output).equal(data.toString());
+            done();
         });
     });
 
@@ -61,11 +60,10 @@ describe('transform', function () {
             console.log(err.message);
         });
         transformer.on('end', function() {
-            fs.readFile('test/data/PGA_2records.mrc', function(err, data) {
-                expect(output.length).equal(data.length);
-                expect(output).equal(data.toString());
-                done();
-            });
+            var data = fs.readFileSync('test/data/PGA_2records.mrc');
+            expect(output.length).equal(data.length);
+            expect(output).equal(data.toString());
+            done();
         });
         records.forEach(function(record) {
             transformer.write(record);
@@ -87,11 +85,10 @@ describe('transform', function () {
             console.log(err.message);
         });
         transformer.on('end', function() {
-            fs.readFile('test/data/PGA_2records.mrc', function(err, data) {
-                expect(output.length).equal(data.length);
-                expect(output).equal(data.toString());
-                done();
-            });
+            var data = fs.readFileSync('test/data/PGA_2records.mrc');
+            expect(output.length).equal(data.length);
+            expect(output).equal(data.toString());
+            done();
         });
         records.forEach(function(record) {
             transformer.write(record);
@@ -115,13 +112,12 @@ describe('transform', function () {
     });
 
     it('should textify the records with callback', function(done) {
-        fs.readFile('test/data/PGA_2records.mrk', function(err, data) {
-            data = data.toString().replace(/\r\n?/g, os.EOL) + os.EOL;
-            transform(records, {toFormat: 'text'}, function(err, output) {
-                expect(output.length).equal(data.length);
-                expect(output).equal(data);
-                done();
-            });
+        var data = fs.readFileSync('test/data/PGA_2records.mrk');
+        data = data.toString().replace(/\r\n?/g, os.EOL) + os.EOL;
+        transform(records, {toFormat: 'text'}, function(err, output) {
+            expect(output.length).equal(data.length);
+            expect(output).equal(data);
+            done();
         });
     });
 
@@ -142,12 +138,11 @@ describe('transform', function () {
             console.log(err.message);
         });
         textifier.on('end', function() {
-            fs.readFile('test/data/PGA_2records.mrk', function(err, data) {
-                data = data.toString().replace(/\r\n?/g, os.EOL) + os.EOL;
-                expect(output.length).equal(data.length);
-                expect(output).equal(data.toString());
-                done();
-            });
+            var data = fs.readFileSync('test/data/PGA_2records.mrk');
+            data = data.toString().replace(/\r\n?/g, os.EOL) + os.EOL;
+            expect(output.length).equal(data.length);
+            expect(output).equal(data.toString());
+            done();
         });
         records.forEach(function(record) {
             textifier.write(record);
@@ -169,12 +164,11 @@ describe('transform', function () {
             console.log(err.message);
         });
         textifier.on('end', function() {
-            fs.readFile('test/data/PGA_2records.mrk', function(err, data) {
-                data = data.toString().replace(/\r\n?/g, os.EOL) + os.EOL;
-                expect(output.length).equal(data.length);
-                expect(output).equal(data.toString());
-                done();
-            });
+            var data = fs.readFileSync('test/data/PGA_2records.mrk');
+            data = data.toString().replace(/\r\n?/g, os.EOL) + os.EOL;
+            expect(output.length).equal(data.length);
+            expect(output).equal(data.toString());
+            done();
         });
         records.forEach(function(record) {
             textifier.write(record);
