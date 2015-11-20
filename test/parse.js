@@ -27,8 +27,9 @@ describe('parse', function () {
         });
 
         parser.on('end', function () {
+            console.log('end' + count);
             expect(count).equal(1);
-            expect(first.variableFields.length).equal(23);
+            expect(first.variableFields.length).to.equal(23);
             expect(first.controlFields.length).equal(4);
             done();
         });
@@ -94,28 +95,27 @@ describe('parse', function () {
     });
 
     it('should parse mrk format', function(done) {
-        fs.readFile('test/collection.mrk', function(err, data) {
-            parse(data, {fromFormat: 'mrk'}, function(err, records) {
-                if (err) {
-                    return console.log(err);
-                }
-                expect(records.length).equal(2);
-                expect(records[1].leader.marshal()).equal('00925njm  22002777a 4500');
-            });
+        var data = fs.readFileSync('test/data/collection.mrk');
+        //console.log(data);
+        parse(data, {fromFormat: 'mrk'}, function(err, records) {
+            if (err) {
+                return console.log(err);
+            }
+            expect(records.length).to.equal(2);
+            expect(records[1].leader.marshal()).equal('01832cmmaa2200349 a 4500');
             done();
         });
     });
 
     it('should parse MARCXML', function(done) {
-        fs.readFile('test/data/sandburg.xml', function(err, data) {
-            parse(data.toString(), {fromFormat: 'marcxml'}, function(err, records) {
-                if (err) {
-                    return console.log(err);
-                }
-                expect(records.length).equal(1);
-                expect(records[0].leader.marshal()).equal('01142cam  2200301 a 4500');
-                expect(records[0].dataFields[6].subfields[1].code).equal('d');
-            });
+        var data = fs.readFileSync('test/data/sandburg.xml');
+        parse(data.toString(), {fromFormat: 'marcxml'}, function(err, records) {
+            if (err) {
+                return console.log(err);
+            }
+            expect(records.length).equal(1);
+            expect(records[0].leader.marshal()).equal('01142cam  2200301 a 4500');
+            expect(records[0].dataFields[6].subfields[1].code).equal('d');
             done();
         });
     });
