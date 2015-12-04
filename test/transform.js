@@ -21,7 +21,7 @@ describe('transform', function () {
         r1.addVariableField(new DataField("100", '1', ' ', [["a", "Biggers, Earl Derr."]]));
         r1.addVariableField(new DataField("245", '1', '0', [["a", "Charlie Chan Carries On"], ["h", "[electronic resource]"]]));
         r1.addVariableField(new DataField("500", ' ', ' ', [["a", "An ebook provided by Project Gutenberg Australia"]]));
-        r1.addVariableField(new DataField("856", '4', '0', [["u", "http://gutenberg.net.au/ebooks07/0700761h.html "]]));
+        r1.addVariableField(new DataField("856", '4', '0', [["u", "http://gutenberg.net.au/ebooks07/0700761h.html"]]));
         records.push(r1);
 
         var r2 = new Record();
@@ -30,7 +30,7 @@ describe('transform', function () {
         r2.addVariableField(new DataField("100", '1', ' ', [["a", "Wallace, Edgar."]]));
         r2.addVariableField(new DataField("245", '1', '0', [["a", "Sanders"], ["h", "[electronic resource]"]]));
         r2.addVariableField(new DataField("500", ' ', ' ', [["a", "An ebook provided by Project Gutenberg Australia"]]));
-        r2.addVariableField(new DataField("856", '4', '0', [["u", "http://gutenberg.net.au/ebooks07/0700771h.html "]]));
+        r2.addVariableField(new DataField("856", '4', '0', [["u", "http://gutenberg.net.au/ebooks07/0700771h.html"]]));
         records.push(r2);
     });
 
@@ -111,25 +111,25 @@ describe('transform', function () {
         });
     });
 
-    it('should textify the records with callback', function(done) {
+    it('should mrkify the records with callback', function(done) {
         var data = fs.readFileSync('test/data/PGA_2records.mrk');
         data = data.toString().replace(/\r\n?/g, os.EOL) + os.EOL;
-        transform(records, {toFormat: 'text'}, function(err, output) {
+        transform(records, {format: 'mrk'}, function(err, output) {
             expect(output.length).equal(data.length);
             expect(output).equal(data);
             done();
         });
     });
 
-    it('should textify one record', function(done) {
-        transform(records[0], {toFormat: 'text'}, function(err, output) {
+    it('should mrkify one record', function(done) {
+        transform(records[0], {toFormat: 'mrk'}, function(err, output) {
             expect(output).to.be.not.null;
             done();
         });
     });
 
-    it('should textify with a flowing stream API', function(done) {
-        var textifier = transform({objectMode: true, toFormat: 'text'});
+    it('should mrkify with a flowing stream API', function(done) {
+        var textifier = transform({objectMode: true, format: 'mrk'});
         var output = '';
         textifier.on('data', function(record) {
             output += record;
@@ -148,11 +148,10 @@ describe('transform', function () {
             textifier.write(record);
         });
         textifier.end();
-
     });
 
-    it('should textify with a non-flowing stream API', function(done) {
-        var textifier = transform({objectMode: false, toFormat: 'text'});
+    it('should mrkify with a non-flowing stream API', function(done) {
+        var textifier = transform({objectMode: false, format: 'mrk'});
         var output = '';
         textifier.on('readable', function() {
             var record;
@@ -166,6 +165,70 @@ describe('transform', function () {
         textifier.on('end', function() {
             var data = fs.readFileSync('test/data/PGA_2records.mrk');
             data = data.toString().replace(/\r\n?/g, os.EOL) + os.EOL;
+            expect(output.length).equal(data.length);
+            expect(output).equal(data.toString());
+            done();
+        });
+        records.forEach(function(record) {
+            textifier.write(record);
+        });
+        textifier.end();
+    });
+
+    it('should textify the records with callback', function(done) {
+        var data = fs.readFileSync('test/data/PGA_2records.txt');
+        data = data.toString().replace(/\r\n?/g, os.EOL) + os.EOL;
+        transform(records, {format: 'text'}, function(err, output) {
+            expect(output.length).equal(data.length);
+            expect(output).equal(data);
+            done();
+        });
+    });
+
+    it('should textify one record', function(done) {
+        transform(records[0], {toFormat: 'text'}, function(err, output) {
+            expect(output).to.be.not.null;
+            done();
+        });
+    });
+
+    it('should textify with a flowing stream API', function(done) {
+        var textifier = transform({objectMode: true, format: 'text'});
+        var output = '';
+        textifier.on('data', function(record) {
+            output += record;
+        });
+        textifier.on('error', function(err) {
+            console.log(err.message);
+        });
+        textifier.on('end', function() {
+            var data = fs.readFileSync('test/data/PGA_2records.txt');
+            data = data.toString().replace(/\r\n?/g, os.EOL) + os.EOL;
+            expect(output.length).equal(data.length);
+            expect(output).equal(data.toString());
+            done();
+        });
+        records.forEach(function(record) {
+            textifier.write(record);
+        });
+        textifier.end();
+    });
+
+    it('should textify with a non-flowing stream API', function(done) {
+        var textifier = transform({objectMode: false, format: 'text'});
+        var output = '';
+        textifier.on('readable', function() {
+            var record;
+            while (record = textifier.read()) {
+                output += record;
+            }
+        });
+        textifier.on('error', function(err) {
+            console.log(err.message);
+        });
+        textifier.on('end', function() {
+            var data = fs.readFileSync('test/data/PGA_2records.txt');
+            data = data.toString().replace(/\r\n?/g, os.EOL)  + os.EOL;
             expect(output.length).equal(data.length);
             expect(output).equal(data.toString());
             done();
@@ -191,5 +254,6 @@ describe('transform', function () {
             expect(obj[1].fields.length).equal(5);
             done();
         });
-    })
+    });
+
 });

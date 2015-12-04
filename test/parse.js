@@ -97,8 +97,21 @@ describe('parse', function () {
 
     it('should parse mrk format', function(done) {
         var data = fs.readFileSync('test/data/collection.mrk');
-        //console.log(data);
         parse(data, {fromFormat: 'mrk'}, function(err, records) {
+            if (err) {
+                console.log(err);
+            } else {
+                expect(records.length).to.equal(2);
+                expect(records[1].leader.marshal()).equal('01832cmmaa2200349 a 4500');
+            }
+            done();
+        });
+    });
+
+    it('should parse text format', function(done) {
+        "use strict";
+        var data = fs.readFileSync('test/data/collection.txt');
+        parse(data, {fromFormat: 'text'}, function(err, records) {
             if (err) {
                 console.log(err);
             } else {
@@ -147,7 +160,6 @@ describe('parse', function () {
     it('should parse marc-in-json with multiple records', function(done) {
         var data = fs.readFileSync('test/data/collection.json');
         parse(data.toString(), {fromFormat: 'json'}, function(err, records) {
-            console.log(records.length);
             expect(records.length).equal(2);
             expect(records[1].leader.marshal()).equal('01832cmma 2200349 a 4500');
             done();
@@ -201,4 +213,13 @@ describe('parse', function () {
             done();
         });
     });
+    //
+    //it('should throw an error when there is an error', function(done) {
+    //    "use strict";
+    //    var data = fs.readFileSync('test/data/collection-error.mrc');
+    //    parse(data, {fromFormat: 'marc'}, function(err, records) {
+    //        expect(err).to.exist;
+    //        done();
+    //    });
+    //});
 });
