@@ -10,7 +10,7 @@ npm install marc4js
 
 ## Features
 
-In the current release (version 0.0.5), marc4js provides the following features
+marc4js provides the following features
 
 * An easy to use API that can handle large record sets.
 * Uses Node.js stream API and pipe functions for parsing and writing ISO2709 format, MarcEdit text (mrk) format, MARC in JSON, and MARCXML.
@@ -167,7 +167,7 @@ Outputs ISO2709 format. Used by default or when `format` is `iso2709` or `marc`
 
 ##### MrkTransformer
 
-Outputs MarcEdit text format (.mrk files). Used when `format` is or `mrk`
+Outputs MarcEdit text format (.mrk files). Used when `format` is `mrk`
 
 Other options:
 
