@@ -72,26 +72,30 @@ fs.createReadStream('/path/to/your/file').pipe(parser).pipe(transformer).pipe(pr
 
 #### options
 
-`fromFormat`: default `iso2709`, possible values `iso2709`, `marc`, `text`, `mrk`, `marcxml`, `xml`
+`format`: default `iso2709`, possible values `iso2709`, `marc`, `text`, `mrk`, `marcxml`, `xml`
 
 #### Different types of parsers
 
 ##### Iso2709Parser
 
-Parses ISO2709 format. Used by default or when `fromFormat` is `iso2709` or `marc`
+Parses ISO2709 format. Used by default or when `format` is `iso2709` or `marc`
 
 ##### MrkParser
 
-Parses MarcEdit text format (.mrk files). Used when `fromFormat` is `text` or `mrk`
+Parses MarcEdit text format (.mrk files). Used when `format` is `mrk`
 
 Other options:
 
 * `spaceReplace`: In MarcEdit mrk files, spaces in data field indicators or control fields are replace by `\`. By default
 MrkPaser will convert `\` to space in those places. It can be configured with this option.
 
+##### TextParser
+
+Parses a text format that is slightly different from mrk format. Used when `format` is `text`.
+
 ##### MarcxmlParser
 
-Parses MarcEdit text format (.mrk files). Used when `fromFormat` is `marcxml` or `xml`
+Parses MarcEdit text format (.mrk files). Used when `format` is `marcxml` or `xml`
 
 The stream and pipe API is SAX based so it doesn't require in-memory storage of the records. This is suitable for processing large MARCXML file.
 The callback API will read all records in memory and return it in the callback function and is not advised to process large MARCXML file.
@@ -102,7 +106,7 @@ Other options:
 
 ##### MijParser
 
-Parses [MARC-in-JSON](http://dilettantes.code4lib.org/blog/2010/09/a-proposal-to-serialize-marc-in-json/) format. Used when `fromFormat` is `json` or `mij`.
+Parses [MARC-in-JSON](http://dilettantes.code4lib.org/blog/2010/09/a-proposal-to-serialize-marc-in-json/) format. Used when `format` is `json` or `mij`.
 
 The stream and pipe API uses a sax-like JSON stream parser so it doesn't require in-memory storage of the records. Thus it can process
 large number of MARC-in-JSON records.
@@ -152,26 +156,30 @@ fs.createReadStream('/path/to/your/file').pipe(parser).pipe(transformer).pipe(pr
 
 #### options
 
-`toFormat`: default `iso2709`, possible values `iso2709`, `marc`, `text`, `mrk`, `marcxml`, `xml`
+`format`: default `iso2709`, possible values `iso2709`, `marc`, `text`, `mrk`, `marcxml`, `xml`
 `objectMode`: default `false`. Used to switch between the flowing and paused (aka non-flowing) mode in the [stream API](http://nodejs.org/api/stream.html).
 
 #### Different types of Transformers
 
 ##### Iso2709Transformer
 
-Outputs ISO2709 format. Used by default or when `toFormat` is `iso2709` or `marc`
+Outputs ISO2709 format. Used by default or when `format` is `iso2709` or `marc`
 
 ##### MrkTransformer
 
-Outputs MarcEdit text format (.mrk files). Used when `toFormat` is `text` or `mrk`
+Outputs MarcEdit text format (.mrk files). Used when `format` is or `mrk`
 
 Other options:
 
 * `spaceReplace`: by default space in data field indicators and control fields are replaced with `\`. But it can be configured with this option.
 
+##### TextTransformer
+
+Outputs text format, which is slightly different from mrk format. Used when `format` is `text`.
+
 ##### MarcxmlTransformer
 
-Outputs MarcEdit text format (.mrk files). Used when `toFormat` is `marcxml` or `xml`
+Outputs MarcEdit text format (.mrk files). Used when `format` is `marcxml` or `xml`
 
 Other options:
 
@@ -183,7 +191,7 @@ Other options:
 
 ##### MijTransformer
 
-Outputs [MARC-in-JSON](http://dilettantes.code4lib.org/blog/2010/09/a-proposal-to-serialize-marc-in-json/) string. Used when `toFormat` is `json` or `mij`.
+Outputs [MARC-in-JSON](http://dilettantes.code4lib.org/blog/2010/09/a-proposal-to-serialize-marc-in-json/) string. Used when `format` is `json` or `mij`.
 
 Other options:
 
