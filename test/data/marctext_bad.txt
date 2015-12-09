@@ -1,0 +1,18 @@
+LDR    00000nam  22002538a 4500
+040    $aMdSSJTT
+       $cMdSSJTT
+040    $aMdSSJTT
+       $beng
+       $cMdSSJTT
+100 14 $aWall, Larry.
+110 1  $aO'Reilly & Associates.
+245 90 $aProgramming Perl /
+       $aBig Book of Perl /
+       $cLarry Wall, Tom Christiansen & Jon Orwant.
+250    $a3rd ed.
+250    $a3rd ed.
+260    $aCambridge, Mass. :
+       $bO'Reilly,
+       $r2000.
+590 4  $aPersonally signed by Larry.
+856 43 $uhttp://www.perl.com/
