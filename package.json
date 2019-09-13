@@ -22,7 +22,7 @@
   "dependencies": {
     "clarinet": "^0.10.0",
     "sax": "^0.6.1",
-    "xmlbuilder": "^2.5.2"
+    "xmlbuilder": "^13.0.2"
   },
   "devDependencies": {
     "chai": "^1.10.0",
