@@ -106,7 +106,7 @@ Other options:
 
 ##### MijParser
 
-Parses [MARC-in-JSON](http://dilettantes.code4lib.org/blog/2010/09/a-proposal-to-serialize-marc-in-json/) format. Used when `format` is `json` or `mij`.
+Parses [MARC-in-JSON](https://rossfsinger.com/blog/2010/09/a-proposal-to-serialize-marc-in-json/) format. Used when `format` is `json` or `mij`.
 
 The stream and pipe API uses a sax-like JSON stream parser so it doesn't require in-memory storage of the records. Thus it can process
 large number of MARC-in-JSON records.
@@ -191,7 +191,7 @@ Other options:
 
 ##### MijTransformer
 
-Outputs [MARC-in-JSON](http://dilettantes.code4lib.org/blog/2010/09/a-proposal-to-serialize-marc-in-json/) string. Used when `format` is `json` or `mij`.
+Outputs [MARC-in-JSON](https://rossfsinger.com/blog/2010/09/a-proposal-to-serialize-marc-in-json/) string. Used when `format` is `json` or `mij`.
 
 Other options:
 
