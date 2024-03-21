@@ -12,22 +12,22 @@ npm install marc4js
 
 marc4js provides the following features
 
-* An easy to use API that can handle large record sets.
-* Uses Node.js stream API and pipe functions for parsing and writing ISO2709 format, MarcEdit text (mrk) format, MARC in JSON, and MARCXML.
-* Offers callback functions for parsing and writing various formats.
-* SAX based MARCXML parsing that doesn't in-memory storage of records while parsing. Able to parse large MARCXML file with ease.
-* A MARC record object model for in-memory editing of MARC records, similar to the Marc4J object model
-* Supports UTF-8 encoded marc files and MARC-8 encoded marc files (It requires [marc8](https://www.npmjs.com/package/marc8) to handle MARC-8 encoded files).
+-   An easy to use API that can handle large record sets.
+-   Uses Node.js stream API and pipe functions for parsing and writing ISO2709 format, MarcEdit text (mrk) format, MARC in JSON, and MARCXML.
+-   Offers callback functions for parsing and writing various formats.
+-   SAX based MARCXML parsing that doesn't in-memory storage of records while parsing. Able to parse large MARCXML file with ease.
+-   A MARC record object model for in-memory editing of MARC records, similar to the Marc4J object model
+-   Supports UTF-8 encoded marc files and MARC-8 encoded marc files (It requires [marc8](https://www.npmjs.com/package/marc8) to handle MARC-8 encoded files).
 
 ## Examples
 
 Examples can be found in the the [marc4js_examples](https://github.com/jiaola/marc4js_examples). You can also find
-examples in the test directory. 
+examples in the test directory.
 
 ## Usage
 
 ```javascript
-var marc4js = require('marc4js');
+import marc4js from "marc4js";
 ```
 
 ### Parsers
@@ -48,12 +48,9 @@ marc4js.parse(data, options, function(err, records) {
 
 ```javascript
 var parser = marc4js.parse(options);
-parser.on('data', function(record) {
-});
-parser.on('end', function() {
-});
-parser.on('error', function(err) {
-});
+parser.on("data", function (record) {});
+parser.on("end", function () {});
+parser.on("error", function (err) {});
 parser.write(data);
 parser.end();
 ```
@@ -67,7 +64,10 @@ the stream api is disabled, and is always set to `true`. Listening to the `reada
 
 ```javascript
 var parser = marc4js.parse(options);
-fs.createReadStream('/path/to/your/file').pipe(parser).pipe(transformer).pipe(process.stdout);
+fs.createReadStream("/path/to/your/file")
+    .pipe(parser)
+    .pipe(transformer)
+    .pipe(process.stdout);
 ```
 
 #### options
@@ -86,8 +86,8 @@ Parses MarcEdit text format (.mrk files). Used when `format` is `mrk`
 
 Other options:
 
-* `spaceReplace`: In MarcEdit mrk files, spaces in data field indicators or control fields are replace by `\`. By default
-MrkPaser will convert `\` to space in those places. It can be configured with this option.
+-   `spaceReplace`: In MarcEdit mrk files, spaces in data field indicators or control fields are replace by `\`. By default
+    MrkPaser will convert `\` to space in those places. It can be configured with this option.
 
 ##### TextParser
 
@@ -102,7 +102,7 @@ The callback API will read all records in memory and return it in the callback f
 
 Other options:
 
-* `strict`: default is `false`. When in `strict` mode, the parser will fail if the XML is not well-formatted. For details, see the `strict` option in [sax-js](https://github.com/isaacs/sax-js).
+-   `strict`: default is `false`. When in `strict` mode, the parser will fail if the XML is not well-formatted. For details, see the `strict` option in [sax-js](https://github.com/isaacs/sax-js).
 
 ##### MijParser
 
@@ -129,12 +129,9 @@ marc4js.transform(records, options, function(err, output) {
 
 ```javascript
 var transformer = marc4js.transform(options);
-transformer.on('readable', function(output) {
-});
-transformer.on('end', function() {
-});
-transformer.on('error', function(err) {
-});
+transformer.on("readable", function (output) {});
+transformer.on("end", function () {});
+transformer.on("error", function (err) {});
 transformer.write(record); // one record
 // or to write an array of records
 // records.forEach(function(record) {
@@ -151,7 +148,10 @@ if flowing mode is used.
 
 ```javascript
 var transformer = marc4js.transform(options);
-fs.createReadStream('/path/to/your/file').pipe(parser).pipe(transformer).pipe(process.stdout);
+fs.createReadStream("/path/to/your/file")
+    .pipe(parser)
+    .pipe(transformer)
+    .pipe(process.stdout);
 ```
 
 #### options
@@ -171,7 +171,7 @@ Outputs MarcEdit text format (.mrk files). Used when `format` is `mrk`
 
 Other options:
 
-* `spaceReplace`: by default space in data field indicators and control fields are replaced with `\`. But it can be configured with this option.
+-   `spaceReplace`: by default space in data field indicators and control fields are replaced with `\`. But it can be configured with this option.
 
 ##### TextTransformer
 
@@ -183,11 +183,11 @@ Outputs MarcEdit text format (.mrk files). Used when `format` is `marcxml` or `x
 
 Other options:
 
-* `pretty`: default is `true`. Output XML in pretty format. If set to false, new indentation and line-breakers in outputs.
-* `indent`: default is `'  '` (two spaces). Used to indent lines in pretty format.
-* `newline`: default is `\n`. Used in pretty format.
-* `declaration`: default is `true`. If set to `false`, the XML declaration line (`<?xml versiont ...>`) is not included in the output.
-* `root`: default is `true`. If `false`, the root `<collection>` element is not included in the output.
+-   `pretty`: default is `true`. Output XML in pretty format. If set to false, new indentation and line-breakers in outputs.
+-   `indent`: default is `'  '` (two spaces). Used to indent lines in pretty format.
+-   `newline`: default is `\n`. Used in pretty format.
+-   `declaration`: default is `true`. If set to `false`, the XML declaration line (`<?xml versiont ...>`) is not included in the output.
+-   `root`: default is `true`. If `false`, the root `<collection>` element is not included in the output.
 
 ##### MijTransformer
 
@@ -195,7 +195,5 @@ Outputs [MARC-in-JSON](https://rossfsinger.com/blog/2010/09/a-proposal-to-serial
 
 Other options:
 
-* asArray: default is `true`. By default the output will be in an JSON array format, even if there is only one record.
-If this option set to false, the output will not write the enclosing brackets `[` and `]` at the beginning and end of the output.
-
-
+-   asArray: default is `true`. By default the output will be in an JSON array format, even if there is only one record.
+    If this option set to false, the output will not write the enclosing brackets `[` and `]` at the beginning and end of the output.

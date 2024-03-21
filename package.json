@@ -2,7 +2,8 @@
   "name": "marc4js",
   "version": "0.0.10",
   "description": "a node.js module for handling MARC data",
-  "main": "index.js",
+  "exports": "./index.js",
+  "type": "module",
   "scripts": {
     "test": "mocha test --recursive --require test/helpers/chai.js "
   },

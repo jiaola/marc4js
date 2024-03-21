@@ -1,1 +1,1 @@
-module.exports = require('./lib/marc4js');
+export { default } from "./lib/marc4js.js";
